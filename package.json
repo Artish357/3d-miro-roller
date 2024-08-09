@@ -4,9 +4,10 @@
   "license": "MIT",
   "scripts": {
     "start": "vite",
-    "build": "vite build",
+    "build": "vite build --emptyOutDir",
     "serve": "vite preview",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "lint": "eslint src"
   },
   "dependencies": {
     "@3d-dice/dice-box": "^1.1.3",
