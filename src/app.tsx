@@ -19,9 +19,6 @@ const App: FC = () => {
   const rollMod = new URLSearchParams(window.location.search).get("roll-mod");
   useEffect(() => {
     miro.board.getUserInfo().then((u) => setUser(u));
-    miro.board.ui.on("custom:roll-with-mod", (text) => {
-      diceBox.roll(`2d6+${text}`);
-    });
     const diceBox = new DiceBox({
       container: "#dice-container",
       assetPath: "/dice-box/",
@@ -32,7 +29,6 @@ const App: FC = () => {
       new AdvancedRoller({
         target: ".dice-input-container",
         onSubmit(input: string) {
-          console.log("input", input);
           diceBox.roll(input);
         },
       })
@@ -48,7 +44,6 @@ const App: FC = () => {
 
     diceBox.init().then((d: DiceBox) => {
       const rollModParsed = rollMod && parseInt(rollMod);
-      console.log("rollMod", rollMod, rollModParsed);
       if (rollMod != null && !Number.isNaN(rollModParsed)) {
         d.roll(`2d6+${rollModParsed}`);
       }
