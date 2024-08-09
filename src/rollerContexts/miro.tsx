@@ -9,10 +9,12 @@ export const MiroContextProvider = ({ children }: { children: ReactNode }) => {
     miro.board.storage.collection("rollHistory");
 
   const storeRollResult: RollerContext["storeRollResult"] = (
-    result: string,
+    result: string
   ) => {
     miro.board.events.broadcast("roll-result", result);
-    setRollHistory((prev) => [...prev, result].slice(-100));
+    const newHistory = [...rollHistory, result];
+    rollHistoryStorage.set("rollHistory", newHistory);
+    setRollHistory(newHistory.slice(-100));
   };
 
   useEffect(() => {
