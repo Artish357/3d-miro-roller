@@ -1,0 +1,1 @@
+import"./style.a87c9e06.js";import{r as a,j as o,R as i,c as u,A as R}from"./app.d91e6135.js";const d=({children:t})=>{const[r,s]=a.exports.useState([]),n={rollHistory:r,userInfo:{id:"User",name:"User"},storeRollResult:l=>{s(c=>[...c,l].slice(-100))}};return o(i.Provider,{value:n,children:t})},e=document.getElementById("root");e&&u(e).render(o(d,{children:o(R,{})}));
