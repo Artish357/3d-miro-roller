@@ -67,6 +67,7 @@ img {
 .roll-history-entry {
   max-width: 800px;
   margin: 0 auto;
+  word-break: break-word;
 }
 
 .footer {
