@@ -23,7 +23,11 @@ const App: FC = () => {
     const diceBox = new DiceBox({
       container: "#dice-container",
       // Workaround for non-root deployments
-      assetPath: document.location.pathname.split('/').slice(0, -1).concat(['assets/']).join('/'),
+      assetPath: document.location.pathname
+        .split("/")
+        .slice(0, -1)
+        .concat(["assets/"])
+        .join("/"),
       scale: 8,
     });
 
@@ -41,7 +45,6 @@ const App: FC = () => {
       if (rollMod != null && !Number.isNaN(rollModParsed)) {
         d.roll(`2d6+${rollModParsed}`);
       }
-      d.roll("1d6")
       setDiceBox(d);
     });
   }, []);
@@ -99,7 +102,15 @@ const App: FC = () => {
       style={{ gap: "5px" }}
     >
       <div id="dice-input"></div>
-      {rollHistoryElements}
+      {localRollHistory?.map((r, i) => (
+        <div
+          className="fw"
+          key={i}
+          style={{ background: "#F3F3F3", borderRadius: 2, padding: 3 }}
+        >
+          {user?.name ?? 'User'}: {r}
+        </div>
+      ))}
       <div
         id="dice-container"
         style={{
