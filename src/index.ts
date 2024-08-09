@@ -1,6 +1,6 @@
 export async function init() {
   miro.board.ui.on("icon:click", async () => {
-    await miro.board.ui.openPanel({ url: "app.html" });
+    await miro.board.ui.openPanel({ url: "miro.html" });
   });
   miro.board.ui.on(
     "custom:roll-with-mod",
@@ -9,7 +9,7 @@ export async function init() {
       const rollMod = value.items[0].content.match(/[+-]?\d+/g)?.[0];
       if (rollMod) {
         miro.board.ui.openPanel({
-          url: `app.html?roll-mod=${parseInt(
+          url: `miro.html?roll-mod=${parseInt(
             rollMod
           )}&cache-buster=${Math.random() * Number.MAX_VALUE}`,
         });
