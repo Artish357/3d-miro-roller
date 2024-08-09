@@ -1,6 +1,5 @@
 import { Collection, UserInfo } from "@mirohq/websdk-types";
 import { ReactNode, useEffect, useState } from "react";
-import * as React from "react";
 import { RollerContext } from "./rollerContext";
 
 export const MiroContextProvider = ({ children }: { children: ReactNode }) => {
