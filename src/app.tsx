@@ -22,7 +22,7 @@ const App: FC = () => {
     miro.board.getUserInfo().then((u) => setUser(u));
     const diceBox = new DiceBox({
       container: "#dice-container",
-      assetPath: "../assets/",
+      assetPath: document.location.pathname.split('/').slice(0, -1).concat(['assets/']).join('/'),
       scale: 8,
     });
 
