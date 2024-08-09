@@ -9,7 +9,6 @@
   },
   "dependencies": {
     "@3d-dice/dice-box": "^1.1.3",
-    "@3d-dice/dice-ui": "git+https://github.com/3d-dice/dice-ui",
     "mirotone": "5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"

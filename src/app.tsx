@@ -1,6 +1,5 @@
 import { createRoot } from "react-dom/client";
 import DiceBox from "@3d-dice/dice-box";
-import { AdvancedRoller } from "@3d-dice/dice-ui";
 
 import "../src/assets/style.css";
 import * as React from "react";
@@ -8,7 +7,6 @@ import { useEffect, useState, FC } from "react";
 
 const App: FC = () => {
   const [diceBox, setDiceBox] = useState<DiceBox | null>(null);
-  const [_roller, setRoller] = useState<AdvancedRoller | null>(null);
   const rollHistoryStorage = miro.board.storage.collection("rollHistory");
   const [localRollHistory, setLocaRollHistory] = useState<string[] | undefined>(
     undefined
@@ -27,15 +25,6 @@ const App: FC = () => {
       assetPath: "/assets/",
       scale: 8,
     });
-
-    setRoller(
-      new AdvancedRoller({
-        target: ".dice-input-container",
-        onSubmit(input: string) {
-          diceBox.roll(input);
-        },
-      })
-    );
 
     rollHistoryStorage.onValue<string[]>("rollHistory", (rollHistory) => {
       if (rollHistory === undefined) {
