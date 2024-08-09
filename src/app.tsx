@@ -16,7 +16,10 @@ const App: FC = () => {
   const [user, setUser] = useState<Awaited<
     ReturnType<typeof miro.board.getUserInfo>
   > | null>(null);
+
+  // Check if user requested a 2d6+MOD roll
   const rollMod = new URLSearchParams(window.location.search).get("roll-mod");
+
   useEffect(() => {
     miro.board.getUserInfo().then((u) => setUser(u));
     const diceBox = new DiceBox({
@@ -43,6 +46,7 @@ const App: FC = () => {
     });
 
     diceBox.init().then((d: DiceBox) => {
+      // Check if user requested a 2d6+MOD roll
       const rollModParsed = rollMod && parseInt(rollMod);
       if (rollMod != null && !Number.isNaN(rollModParsed)) {
         d.roll(`2d6+${rollModParsed}`);
@@ -53,25 +57,28 @@ const App: FC = () => {
 
   if (diceBox) {
     diceBox.onRollComplete = (
-      result: {
+      rollResults: {
         value: number;
         rolls: { value: number }[];
         mods: object[];
         modifier: number;
       }[]
     ) => {
-      console.log("result", result);
+      console.log("rollResults", rollResults);
       let totalValue = 0;
-      const valueResults = result.map(
-        ({ value: rollValue, rolls, modifier }) => {
-          const modifierString = modifier
-            ? ` ${modifier > 0 ? "+" : "-"} ${Math.abs(modifier)} `
-            : "";
-          totalValue += rollValue;
-          return rolls.map((v) => String(v.value)).join(" + ") + modifierString;
-        }
-      );
-      const valueResult: string = `${valueResults.join(" + ")} = ${String(totalValue)}`;
+      let rollStrings: string[] = [];
+      for (let { value: rollValue, rolls, modifier } of rollResults) {
+        const modifierString = modifier
+          ? ` ${modifier > 0 ? "+" : "-"} ${Math.abs(modifier)} `
+          : "";
+        totalValue += rollValue;
+        const rollString =
+          rolls.map((v) => String(v.value)).join(" + ") + modifierString;
+        rollStrings.push(rollString);
+      }
+      const valueResult: string = `${rollStrings.join(" + ")} = ${String(
+        totalValue
+      )}`;
       const updatedHistory = [...(lolalRollHistory ?? []), valueResult].slice(
         -100
       );
