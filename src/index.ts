@@ -4,17 +4,17 @@ export async function init() {
   });
   miro.board.ui.on(
     "custom:roll-with-mod",
-    (value: {items: { type: "text"; content: string }[]}) => {
+    (value: { items: { type: "text"; content: string }[] }) => {
       // extract only numbers from the text
       const rollMod = value.items[0].content.match(/[+-]?\d+/g)?.[0];
       if (rollMod) {
         miro.board.ui.openPanel({
           url: `miro.html?roll-mod=${parseInt(
-            rollMod
+            rollMod,
           )}&cache-buster=${Math.random() * Number.MAX_VALUE}`,
         });
       }
-    }
+    },
   );
   miro.board.experimental.action.register({
     event: "roll-with-mod",
@@ -35,7 +35,7 @@ export async function init() {
   miro.board.events.on("roll-result", async (message) => {
     let messageString = String(message);
     if (messageString.length > 80) {
-      messageString = "..."+messageString.slice(-75)
+      messageString = "..." + messageString.slice(-75);
     }
     await miro.board.notifications.showInfo(messageString);
   });

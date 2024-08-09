@@ -1,4 +1,4 @@
-@import 'mirotone/dist/styles.css';
+@import "mirotone/dist/styles.css";
 
 *,
 *:before,
@@ -59,8 +59,8 @@ img {
   margin: 0 auto;
   border-radius: 10px;
   box-shadow: none;
-  border: 1px #BEBEBE solid;
-  background: #FAFAFA;
+  border: 1px #bebebe solid;
+  background: #fafafa;
   margin-bottom: 20px;
 }
 

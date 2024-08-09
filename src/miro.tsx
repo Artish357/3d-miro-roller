@@ -1,5 +1,5 @@
 import { createRoot } from "react-dom/client";
-import * as React from 'react'
+import * as React from "react";
 import { MiroContextProvider } from "./rollerContexts/miro";
 import { App } from "./app";
 
@@ -9,6 +9,6 @@ if (container) {
   root.render(
     <MiroContextProvider>
       <App />
-    </MiroContextProvider>
+    </MiroContextProvider>,
   );
 }

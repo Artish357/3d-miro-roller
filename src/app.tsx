@@ -52,7 +52,7 @@ export const App: FC = () => {
         rolls: { value: number }[];
         mods: object[];
         modifier: number;
-      }[]
+      }[],
     ) => {
       console.log("Roll Results", rollResults);
       let totalValue = 0;

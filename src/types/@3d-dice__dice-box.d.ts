@@ -10,8 +10,6 @@ declare module "@3d-dice/dice-box" {
     constructor(options: unknown);
     roll(input: string | string[]): void;
     init(): Promise<DiceBox>;
-    public onRollComplete: (
-      result: RollResult[]
-    ) => void;
+    public onRollComplete: (result: RollResult[]) => void;
   }
 }
