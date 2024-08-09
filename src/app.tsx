@@ -20,11 +20,11 @@ function initiDiceBox(): Promise<DiceBox> {
   return diceBox.init();
 }
 
-function rollResultToString({modifier, rolls, }: RollResult): string {
+function rollResultToString({ modifier, rolls }: RollResult): string {
   const modifierString = modifier
-          ? ` ${modifier > 0 ? "+" : "-"} ${Math.abs(modifier)} `
-          : "";
-return rolls.map((v) => String(v.value)).join(" + ") + modifierString;
+    ? ` ${modifier > 0 ? "+" : "-"} ${Math.abs(modifier)} `
+    : "";
+  return rolls.map((v) => String(v.value)).join(" + ") + modifierString;
 }
 
 const App: FC = () => {
@@ -100,12 +100,24 @@ const App: FC = () => {
       );
     }
   }
+
+  function onInputSubmit(e: React.FormEvent<HTMLInputElement>) {
+    e.preventDefault();
+    console.log(e.currentTarget.value);
+    diceBox?.roll(e.currentTarget.value);
+  }
   return (
     <div
       className="fw fh flex flex-vertical dice-input-container"
       style={{ gap: "5px" }}
     >
-      <div id="dice-input"></div>
+      <input
+        type="text"
+        className="roll-input"
+        placeholder="2d20"
+        onSubmit={onInputSubmit}
+        onKeyDown={(e) => e.key == "Enter" && onInputSubmit(e)}
+      />
       {localRollHistory?.map((r, i) => (
         <div
           className="fw"

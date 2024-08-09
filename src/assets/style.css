@@ -46,3 +46,15 @@ img {
   position: relative !important;
   margin: 0;
 }
+
+.roll-input {
+  padding: 5px;
+  text-align: center;
+  font-size: 2rem;
+  max-width: 400px;
+  margin: 0 auto;
+  border-radius: 10px;
+  box-shadow: none;
+  border: 1px #BEBEBE solid;
+  background: #FAFAFA;
+}
