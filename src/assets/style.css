@@ -54,6 +54,7 @@ img {
   padding: 5px;
   text-align: center;
   font-size: 2rem;
+  width: 100%;
   max-width: 400px;
   margin: 0 auto;
   border-radius: 10px;
