@@ -34,6 +34,13 @@ export async function init() {
       item: {},
     },
   });
+  miro.board.events.on("roll-result", async (message) => {
+    let messageString = String(message);
+    if (messageString.length > 80) {
+      messageString = "..."+messageString.slice(-75)
+    }
+    await miro.board.notifications.showInfo(messageString);
+  });
 }
 
 init();

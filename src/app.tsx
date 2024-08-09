@@ -79,6 +79,7 @@ const App: FC = () => {
       const valueResult: string = `${rollStrings.join(" + ")} = ${String(
         totalValue
       )}`;
+      miro.board.events.broadcast("roll-result", valueResult);
       const updatedHistory = [...(lolalRollHistory ?? []), valueResult].slice(
         -100
       );
