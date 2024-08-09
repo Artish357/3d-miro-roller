@@ -40,6 +40,7 @@ const App: FC = () => {
       if (rollMod != null && !Number.isNaN(rollModParsed)) {
         d.roll(`2d6+${rollModParsed}`);
       }
+      d.roll("1d6")
       setDiceBox(d);
     });
   }, []);

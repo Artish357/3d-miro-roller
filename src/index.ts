@@ -5,10 +5,8 @@ export async function init() {
   miro.board.ui.on(
     "custom:roll-with-mod",
     (value: {items: { type: "text"; content: string }[]}) => {
-      console.log("text", value);
       // extract only numbers from the text
       const rollMod = value.items[0].content.match(/[+-]?\d+/g)?.[0];
-      console.log(value.items[0].content.match(/\d+/g));
       if (rollMod) {
         miro.board.ui.openPanel({
           url: `app.html?roll-mod=${parseInt(
