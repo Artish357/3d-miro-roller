@@ -9,20 +9,23 @@ dns.setDefaultResultOrder('verbatim');
 
 // make sure vite picks up all html files in root, needed for vite build
 const allHtmlEntries: { [key: string]: string } = fs
-  .readdirSync('.')
+  .readdirSync('src')
   .filter((file) => path.extname(file) === '.html')
   .reduce((acc, file) => {
-    acc[path.basename(file, '.html')] = path.resolve(__dirname, file);
+    acc[path.basename(file, '.html')] = path.resolve(__dirname, 'src', file);
 
     return acc;
   }, {} as  { [key: string]: string });
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  root: 'src',
+  publicDir: '../public',
   build: {
     rollupOptions: {
       input: allHtmlEntries,
     },
+    outDir: '../dist',
   },
   plugins: [react()],
   server: {
