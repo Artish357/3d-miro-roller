@@ -39,7 +39,10 @@ img {
 
 .dice-box-canvas {
   width: 100%;
+  max-width: 800px;
   height: 100%;
+  margin: 0 auto;
+  display: block;
 }
 
 .adv-roller {
@@ -57,4 +60,10 @@ img {
   box-shadow: none;
   border: 1px #BEBEBE solid;
   background: #FAFAFA;
+  margin-bottom: 20px;
+}
+
+.roll-history-entry {
+  max-width: 800px;
+  margin: 0 auto;
 }
