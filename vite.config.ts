@@ -3,6 +3,7 @@ import fs from 'fs';
 import dns from 'dns';
 import {defineConfig} from 'vite';
 import react from '@vitejs/plugin-react';
+import { env } from 'process';
 
 // https://vitejs.dev/config/server-options.html#server-host
 dns.setDefaultResultOrder('verbatim');
@@ -21,6 +22,7 @@ const allHtmlEntries: { [key: string]: string } = fs
 export default defineConfig({
   root: 'src',
   publicDir: '../public',
+  base: env.BASE_URL || '/',
   build: {
     rollupOptions: {
       input: allHtmlEntries,
