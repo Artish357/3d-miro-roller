@@ -53,7 +53,7 @@ const App: FC = () => {
         modifier: number;
       }[]
     ) => {
-      console.log("rollResults", rollResults);
+      console.log("Roll results", rollResults);
       let totalValue = 0;
       const rollStrings: string[] = [];
       for (const { value: rollValue, rolls, modifier } of rollResults) {
