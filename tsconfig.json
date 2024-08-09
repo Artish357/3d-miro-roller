@@ -20,7 +20,8 @@
     "forceConsistentCasingInFileNames": true,
     "typeRoots": [
       "./node_modules/@types",
-      "./node_modules/@mirohq"
+      "./node_modules/@mirohq",
+      "./src/types/"
     ],
     "allowJs": true,
     "incremental": true,

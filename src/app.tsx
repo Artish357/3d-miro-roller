@@ -1,19 +1,19 @@
-import * as React from "react";
 import { createRoot } from "react-dom/client";
 import DiceBox from "@3d-dice/dice-box";
 import { AdvancedRoller } from "@3d-dice/dice-ui";
 
 import "../src/assets/style.css";
-import { useEffect } from "react";
+import * as React from 'react'
+import { useEffect, useState, FC } from "react";
 
-const App: React.FC = () => {
-  const [diceBox, setDiceBox] = React.useState<DiceBox | null>(null);
-  const [roller, setRoller] = React.useState<AdvancedRoller | null>(null);
+const App: FC = () => {
+  const [diceBox, setDiceBox] = useState<DiceBox | null>(null);
+  const [_roller, setRoller] = useState<AdvancedRoller | null>(null);
   const rollHistoryStorage = miro.board.storage.collection("rollHistory");
-  const [rollHistory, setRollHistory] = React.useState<string[] | undefined>(
+  const [lolalRollHistory, setLocaRollHistory] = useState<string[] | undefined>(
     undefined
   );
-  const [user, setUser] = React.useState<Awaited<
+  const [user, setUser] = useState<Awaited<
     ReturnType<typeof miro.board.getUserInfo>
   > | null>(null);
   const rollMod = new URLSearchParams(window.location.search).get("roll-mod");
@@ -39,18 +39,12 @@ const App: React.FC = () => {
     );
 
     rollHistoryStorage.onValue<string[]>("rollHistory", (rollHistory) => {
-      console.log("setting roll history", rollHistory);
       if (rollHistory === undefined) {
         rollHistoryStorage.set("rollHistory", []);
       } else {
-        setRollHistory([...rollHistory]);
+        setLocaRollHistory(rollHistory);
       }
     });
-
-    rollHistoryStorage.get<string[]>("rollHistory").then((rollHistory) => {
-      console.log('got roll history', rollHistory);
-      setRollHistory(rollHistory);
-    })
 
     diceBox.init().then((d: DiceBox) => {
       const rollModParsed = rollMod && parseInt(rollMod);
@@ -80,23 +74,22 @@ const App: React.FC = () => {
           .map((v) => String(v.value))
           .join(" + ")}${modifierString} = ${String(value)}`;
       });
-      const newValue = [...(rollHistory ?? []), ...valueResults].slice(-100);
-      console.log("newValue", newValue);
-      rollHistoryStorage.set("rollHistory", newValue);
-      setRollHistory(newValue);
+      const updatedHistory = [...(lolalRollHistory ?? []), ...valueResults].slice(-100);
+      rollHistoryStorage.set("rollHistory", updatedHistory);
+      setLocaRollHistory(updatedHistory);
     };
   }
 
   const rollHistoryElements = [];
-  if (rollHistory !== undefined) {
-    for (let i = rollHistory.length - 1; i >= 0; i--) {
+  if (lolalRollHistory !== undefined) {
+    for (let i = lolalRollHistory.length - 1; i >= 0; i--) {
       rollHistoryElements.push(
         <div
           className="fw"
           key={i}
           style={{ background: "#F3F3F3", borderRadius: 2, padding: 3 }}
         >
-          {user?.name}: {rollHistory[i]}
+          {user?.name}: {lolalRollHistory[i]}
         </div>
       );
     }
@@ -123,5 +116,7 @@ const App: React.FC = () => {
 };
 
 const container = document.getElementById("root");
-const root = createRoot(container);
-root.render(<App />);
+if (container) {
+  const root = createRoot(container);
+  root.render(<App />);
+}
