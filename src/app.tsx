@@ -55,8 +55,8 @@ const App: FC = () => {
     ) => {
       console.log("rollResults", rollResults);
       let totalValue = 0;
-      let rollStrings: string[] = [];
-      for (let { value: rollValue, rolls, modifier } of rollResults) {
+      const rollStrings: string[] = [];
+      for (const { value: rollValue, rolls, modifier } of rollResults) {
         const modifierString = modifier
           ? ` ${modifier > 0 ? "+" : "-"} ${Math.abs(modifier)} `
           : "";
