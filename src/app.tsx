@@ -3,7 +3,7 @@ import DiceBox from "@3d-dice/dice-box";
 import { AdvancedRoller } from "@3d-dice/dice-ui";
 
 import "../src/assets/style.css";
-import * as React from 'react'
+import * as React from "react";
 import { useEffect, useState, FC } from "react";
 
 const App: FC = () => {
@@ -52,8 +52,8 @@ const App: FC = () => {
       if (rollMod != null && !Number.isNaN(rollModParsed)) {
         d.roll(`2d6+${rollModParsed}`);
       }
+      setDiceBox(d);
     });
-    setDiceBox(diceBox);
   }, []);
 
   if (diceBox) {
@@ -66,15 +66,20 @@ const App: FC = () => {
       }[]
     ) => {
       console.log("result", result);
-      const valueResults = result.map(({ value, rolls, modifier }) => {
-        const modifierString = modifier
-          ? ` ${modifier > 0 ? "+" : "-"} ${Math.abs(modifier)} `
-          : "";
-        return `${rolls
-          .map((v) => String(v.value))
-          .join(" + ")}${modifierString} = ${String(value)}`;
-      });
-      const updatedHistory = [...(lolalRollHistory ?? []), ...valueResults].slice(-100);
+      let totalValue = 0;
+      const valueResults = result.map(
+        ({ value: rollValue, rolls, modifier }) => {
+          const modifierString = modifier
+            ? ` ${modifier > 0 ? "+" : "-"} ${Math.abs(modifier)} `
+            : "";
+          totalValue += rollValue;
+          return rolls.map((v) => String(v.value)).join(" + ") + modifierString;
+        }
+      );
+      const valueResult: string = `${valueResults.join(" + ")} = ${String(totalValue)}`;
+      const updatedHistory = [...(lolalRollHistory ?? []), valueResult].slice(
+        -100
+      );
       rollHistoryStorage.set("rollHistory", updatedHistory);
       setLocaRollHistory(updatedHistory);
     };
