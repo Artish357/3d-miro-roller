@@ -80,7 +80,7 @@ const App: React.FC = () => {
           .map((v) => String(v.value))
           .join(" + ")}${modifierString} = ${String(value)}`;
       });
-      const newValue = [...(rollHistory ?? []), ...valueResults].slice(-3);
+      const newValue = [...(rollHistory ?? []), ...valueResults].slice(-100);
       console.log("newValue", newValue);
       rollHistoryStorage.set("rollHistory", newValue);
       setRollHistory(newValue);
