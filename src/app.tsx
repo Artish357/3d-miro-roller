@@ -10,7 +10,7 @@ const App: FC = () => {
   const [diceBox, setDiceBox] = useState<DiceBox | null>(null);
   const [_roller, setRoller] = useState<AdvancedRoller | null>(null);
   const rollHistoryStorage = miro.board.storage.collection("rollHistory");
-  const [lolalRollHistory, setLocaRollHistory] = useState<string[] | undefined>(
+  const [localRollHistory, setLocaRollHistory] = useState<string[] | undefined>(
     undefined
   );
   const [user, setUser] = useState<Awaited<
@@ -80,7 +80,7 @@ const App: FC = () => {
         totalValue
       )}`;
       miro.board.events.broadcast("roll-result", valueResult);
-      const updatedHistory = [...(lolalRollHistory ?? []), valueResult].slice(
+      const updatedHistory = [...(localRollHistory ?? []), valueResult].slice(
         -100
       );
       rollHistoryStorage.set("rollHistory", updatedHistory);
@@ -89,15 +89,15 @@ const App: FC = () => {
   }
 
   const rollHistoryElements = [];
-  if (lolalRollHistory !== undefined) {
-    for (let i = lolalRollHistory.length - 1; i >= 0; i--) {
+  if (localRollHistory !== undefined) {
+    for (let i = localRollHistory.length - 1; i >= 0; i--) {
       rollHistoryElements.push(
         <div
           className="fw"
           key={i}
           style={{ background: "#F3F3F3", borderRadius: 2, padding: 3 }}
         >
-          {user?.name}: {lolalRollHistory[i]}
+          {user?.name}: {localRollHistory[i]}
         </div>
       );
     }
