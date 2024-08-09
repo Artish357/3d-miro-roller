@@ -1,7 +1,6 @@
 import DiceBox, { RollResult } from "@3d-dice/dice-box";
 
 import "../src/assets/style.css";
-import * as React from "react";
 import { useEffect, useState, FC, useContext } from "react";
 import { RollerContext } from "./rollerContexts/rollerContext";
 
