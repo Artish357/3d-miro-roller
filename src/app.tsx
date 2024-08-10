@@ -1,8 +1,10 @@
-import DiceBox, { RollResult } from "@3d-dice/dice-box";
+import DiceBox from "@3d-dice/dice-box";
 
 import "../src/assets/style.css";
 import { useEffect, useState, FC, useContext } from "react";
 import { RollerContext } from "./rollerContexts/rollerContext";
+import { HistoricalRollResult } from "./types/diceRoller";
+import { RollResultDisplay } from "./components/RollResultDisplay";
 
 function initDiceBox(): Promise<DiceBox> {
   return new DiceBox({
@@ -15,13 +17,6 @@ function initDiceBox(): Promise<DiceBox> {
       .join("/"),
     scale: 8,
   }).init();
-}
-
-function rollResultToString({ modifier, rolls }: RollResult): string {
-  const modifierString = modifier
-    ? ` ${modifier > 0 ? "+" : "-"} ${Math.abs(modifier)} `
-    : "";
-  return rolls.map((v) => String(v.value)).join(",") + modifierString;
 }
 
 export const App: FC = () => {
@@ -42,29 +37,27 @@ export const App: FC = () => {
   }, []);
 
   if (diceBox) {
-    diceBox.onRollComplete = (
-      rollResults: {
-        value: number;
-        rolls: { value: number }[];
-        mods: object[];
-        modifier: number;
-      }[]
-    ) => {
+    diceBox.onRollComplete = (rollResults) => {
       console.log("Roll Results", rollResults);
-      let totalValue = 0;
-      const rollStrings: string[] = [];
-      for (const rr of rollResults) {
-        rollStrings.push(rollResultToString(rr));
-        totalValue += rr.value;
-      }
-      const valueResult = `${rollStrings.join(" + ")} = ${totalValue}`;
+      const valueResult: HistoricalRollResult = {
+        modifier: rollResults.reduce((acc, r) => acc + r.modifier, 0),
+        rolls: rollResults.map(({ rolls }) =>
+          rolls.map((roll) => ({
+            value: roll.value,
+            sides: roll.sides,
+          }))
+        ),
+        timestamp: new Date().toISOString(),
+        userName: userInfo.name,
+        total: rollResults.reduce((acc, r) => acc + r.value, 0),
+      };
       storeRollResult(valueResult);
     };
   }
 
   function onInputSubmit(e: React.FormEvent<HTMLInputElement>) {
     e.preventDefault();
-    const value = e.currentTarget.value;
+    const value = e.currentTarget.value.replaceAll(" ", "");
     const rolls: string[] = [""];
     for (const char of value) {
       if (char === "+" || char === "-") {
@@ -107,15 +100,7 @@ export const App: FC = () => {
       />
       {rollHistory.map((_, i) => {
         const r = rollHistory[rollHistory.length - 1 - i];
-        return (
-          <div
-            className="fw roll-history-entry"
-            key={i}
-            style={{ background: "#F3F3F3", borderRadius: 2, padding: 3 }}
-          >
-            {userInfo.name}: {r}
-          </div>
-        );
+        return <RollResultDisplay key={i} rollResult={r} />;
       })}
       <div
         id="dice-container"

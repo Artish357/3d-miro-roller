@@ -1,7 +1,7 @@
 declare module "@3d-dice/dice-box" {
   export type RollResult = {
     value: number;
-    rolls: { value: number }[];
+    rolls: { value: number; sides: number }[];
     mods: object[];
     modifier: number;
   };

@@ -1,29 +1,28 @@
 import { Collection, UserInfo } from "@mirohq/websdk-types";
 import { ReactNode, useEffect, useState } from "react";
 import { RollerContext } from "./rollerContext";
+import { HistoricalRollResult } from "../types/diceRoller";
 
 export const MiroContextProvider = ({ children }: { children: ReactNode }) => {
-  const [rollHistory, setRollHistory] = useState<string[]>([]);
+  const [rollHistory, setRollHistory] = useState<HistoricalRollResult[]>([]);
   const [userInfo, setUserInfo] = useState<UserInfo>({ id: "", name: "" });
   const rollHistoryStorage: Collection =
     miro.board.storage.collection("rollHistory");
 
-  const storeRollResult: RollerContext["storeRollResult"] = (
-    result: string
-  ) => {
-    miro.board.events.broadcast("roll-result", result);
+  const storeRollResult: RollerContext["storeRollResult"] = (result) => {
+    miro.board.events.broadcast("roll-result", JSON.stringify(result)); // TODO: Format string
     const newHistory = [...rollHistory, result];
-    rollHistoryStorage.set("rollHistory", newHistory);
+    rollHistoryStorage.set("rollHistory", JSON.stringify(newHistory));
     setRollHistory(newHistory.slice(-100));
   };
 
   useEffect(() => {
     miro.board.getUserInfo().then((u) => setUserInfo(u));
-    rollHistoryStorage.onValue<string[]>("rollHistory", (rollHistory) => {
+    rollHistoryStorage.onValue<string>("rollHistory", (rollHistory) => {
       if (rollHistory === undefined) {
         rollHistoryStorage.set("rollHistory", []);
       } else {
-        setRollHistory(rollHistory);
+        setRollHistory(JSON.parse(rollHistory) as HistoricalRollResult[]);
       }
     });
   }, []);
