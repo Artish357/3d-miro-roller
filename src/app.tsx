@@ -4,8 +4,8 @@ import "../src/assets/style.css";
 import { useEffect, useState, FC, useContext } from "react";
 import { RollerContext } from "./rollerContexts/rollerContext";
 
-function initiDiceBox(): Promise<DiceBox> {
-  const diceBox = new DiceBox({
+function initDiceBox(): Promise<DiceBox> {
+  return new DiceBox({
     container: "#dice-container",
     // Workaround for non-root deployments
     assetPath: document.location.pathname
@@ -14,9 +14,7 @@ function initiDiceBox(): Promise<DiceBox> {
       .concat(["assets/"])
       .join("/"),
     scale: 8,
-  });
-
-  return diceBox.init();
+  }).init();
 }
 
 function rollResultToString({ modifier, rolls }: RollResult): string {
@@ -28,19 +26,18 @@ function rollResultToString({ modifier, rolls }: RollResult): string {
 
 export const App: FC = () => {
   const [diceBox, setDiceBox] = useState<DiceBox | null>(null);
-  const { rollHistory, storeRollResult, userInfo } = useContext(RollerContext);
-
-  // Check if user requested a 2d6+MOD roll
-  const rollMod = new URLSearchParams(window.location.search).get("roll-mod");
+  const { rollHistory, storeRollResult, userInfo, panelData } =
+    useContext(RollerContext);
 
   useEffect(() => {
-    initiDiceBox().then((d: DiceBox) => {
-      // Check if user requested a 2d6+MOD roll
-      const rollModParsed = rollMod && parseInt(rollMod);
-      if (rollMod != null && !Number.isNaN(rollModParsed)) {
-        d.roll(`2d6+${rollModParsed}`);
+    const diceBoxPromise = initDiceBox();
+    panelData.then(async (data) => {
+      for (const formula of data?.formulas ?? []) {
+        await (await diceBoxPromise).roll(formula);
       }
-      setDiceBox(d);
+    });
+    diceBoxPromise.then((newDiceBox) => {
+      setDiceBox(newDiceBox);
     });
   }, []);
 

@@ -11,7 +11,7 @@ export const LocalContextProvider = ({
   const userInfo = { id: "User", name: "User" };
 
   const storeRollResult: RollerContext["storeRollResult"] = (
-    result: string,
+    result: string
   ) => {
     setRollHistory((prev) => [...prev, result].slice(-100));
   };
@@ -19,6 +19,7 @@ export const LocalContextProvider = ({
   const context: RollerContext = {
     rollHistory,
     userInfo,
+    panelData: new Promise((resolve) => resolve(undefined)),
     storeRollResult,
   };
   return (

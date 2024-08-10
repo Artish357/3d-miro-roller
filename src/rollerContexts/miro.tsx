@@ -31,6 +31,7 @@ export const MiroContextProvider = ({ children }: { children: ReactNode }) => {
   const context: RollerContext = {
     rollHistory,
     userInfo,
+    panelData: miro.board.ui.getPanelData(),
     storeRollResult,
   };
   return (
