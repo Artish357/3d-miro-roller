@@ -21,6 +21,7 @@ function initDiceBox(): Promise<DiceBox> {
 
 export const App: FC = () => {
   const [diceBox, setDiceBox] = useState<DiceBox | null>(null);
+  const [lastFormula, setLastFormula] = useState<string>("");
   const { rollHistory, storeRollResult, userInfo, panelData } =
     useContext(RollerContext);
 
@@ -28,6 +29,7 @@ export const App: FC = () => {
     const diceBoxPromise = initDiceBox();
     panelData.then(async (data) => {
       for (const formula of data?.formulas ?? []) {
+        setLastFormula(formula);
         await (await diceBoxPromise).roll(formula);
       }
     });
@@ -49,7 +51,7 @@ export const App: FC = () => {
         ),
         timestamp: new Date().toISOString(),
         userName: userInfo.name,
-        originalFormula: "?d?+?",
+        originalFormula: lastFormula,
         total: rollResults.reduce((acc, r) => acc + r.value, 0),
       };
       storeRollResult(valueResult);
@@ -85,12 +87,13 @@ export const App: FC = () => {
       signedModifier = `-${combinedModifiers}`;
     }
     diceRolls[diceRolls.length - 1] += signedModifier;
+    setLastFormula(diceRolls.join("+"));
     diceBox?.roll(diceRolls);
   }
   return (
     <div
       className="fw fh flex flex-vertical dice-input-container"
-      style={{ gap: "5px" }}
+      style={{ gap: "15px" }}
     >
       <input
         type="text"

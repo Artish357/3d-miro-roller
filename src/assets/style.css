@@ -37,17 +37,24 @@ img {
   flex-direction: column;
 }
 
+.flex-horizontal {
+  flex-direction: row;
+}
+
+.flex-space-between {
+  justify-content: space-between;
+}
+
+.flex-v-center {
+  align-items: center;
+}
+
 .dice-box-canvas {
   width: 100%;
   max-width: 800px;
   height: 100%;
   margin: 0 auto;
   display: block;
-}
-
-.adv-roller {
-  position: relative !important;
-  margin: 0;
 }
 
 .roll-input {
@@ -61,13 +68,19 @@ img {
   box-shadow: none;
   border: 1px #bebebe solid;
   background: #fafafa;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .roll-history-entry {
-  max-width: 800px;
+  max-width: 400px;
   margin: 0 auto;
   word-break: break-word;
+}
+
+.well {
+  background: rgba(200, 200, 200, 0.5);
+  padding: 10px;
+  border-radius: 10px;
 }
 
 .footer {

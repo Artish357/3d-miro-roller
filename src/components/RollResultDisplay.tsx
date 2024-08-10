@@ -1,4 +1,3 @@
-import { Fragment } from "react";
 import { HistoricalRollResult } from "../types/historicalRollResult";
 import { DieResultDisplay } from "./DieResultDisplay";
 
@@ -7,22 +6,31 @@ export type RollResultDisplayProps = {
 };
 
 export const RollResultDisplay = ({
-  rollResult: { userName, modifier, rolls, total, timestamp },
+  rollResult: { userName, modifier, rolls, total, timestamp, originalFormula },
 }: RollResultDisplayProps) => {
   const date = new Date(timestamp);
   return (
     <div
       className="fw roll-history-entry"
-      style={{ background: "#F3F3F3", borderRadius: 2, padding: 3 }}
+      style={{ background: "#F3F3F3", borderRadius: 5, padding: "10px 15px" }}
     >
-      <div className="tooltip">
-        {userName}
-        <div className="tooltiptext">
+      <div
+        className="fw flex flex-space-between flex-v-center"
+        style={{ marginBottom: "5px" }}
+      >
+        <span>{userName}</span>
+        <span style={{ fontSize: "0.75rem" }}>
           {date.toLocaleDateString()} {date.toLocaleTimeString()}
-        </div>
+        </span>
       </div>
-      {": "}
-      {rolls.map((roll, i) => (
+      <div
+        className="flex fw flex-vertical"
+        style={{ gap: "5px", textAlign: "center" }}
+      >
+        <div className="well">{originalFormula}</div>
+        <div className="well">{total}</div>
+      </div>
+      {/* {rolls.map((roll, i) => (
         <Fragment key={i}>
           {roll.map((dieResult, j) => (
             <Fragment key={j}>
@@ -35,7 +43,7 @@ export const RollResultDisplay = ({
       ))}
       {modifier ? (modifier > 0 ? " + " : " - ") + Math.abs(modifier) : ""}
       {" = "}
-      {total}
+      {total} */}
     </div>
   );
 };
