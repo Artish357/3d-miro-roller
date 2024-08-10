@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { HistoricalRollResult } from "../types/diceRoller";
+import { HistoricalRollResult } from "./historicalRollResult";
 
 export type RollerContext = {
   rollHistory: HistoricalRollResult[];

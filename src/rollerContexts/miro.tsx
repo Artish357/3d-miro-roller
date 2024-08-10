@@ -1,7 +1,7 @@
 import { Collection, UserInfo } from "@mirohq/websdk-types";
 import { ReactNode, useEffect, useState } from "react";
-import { RollerContext } from "./rollerContext";
-import { HistoricalRollResult } from "../types/diceRoller";
+import { RollerContext } from "../types/rollerContext";
+import { HistoricalRollResult } from "../types/historicalRollResult";
 
 export const MiroContextProvider = ({ children }: { children: ReactNode }) => {
   const [rollHistory, setRollHistory] = useState<HistoricalRollResult[]>([]);

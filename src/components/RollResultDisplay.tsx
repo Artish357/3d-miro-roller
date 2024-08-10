@@ -1,5 +1,5 @@
 import { Fragment } from "react";
-import { HistoricalRollResult } from "../types/diceRoller";
+import { HistoricalRollResult } from "../types/historicalRollResult";
 import { DieResultDisplay } from "./DieResultDisplay";
 
 export type RollResultDisplayProps = {

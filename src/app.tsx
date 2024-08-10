@@ -2,8 +2,8 @@ import DiceBox from "@3d-dice/dice-box";
 
 import "../src/assets/style.css";
 import { useEffect, useState, FC, useContext } from "react";
-import { RollerContext } from "./rollerContexts/rollerContext";
-import { HistoricalRollResult } from "./types/diceRoller";
+import { RollerContext } from "./types/rollerContext";
+import { HistoricalRollResult } from "./types/historicalRollResult";
 import { RollResultDisplay } from "./components/RollResultDisplay";
 
 function initDiceBox(): Promise<DiceBox> {
@@ -49,6 +49,7 @@ export const App: FC = () => {
         ),
         timestamp: new Date().toISOString(),
         userName: userInfo.name,
+        originalFormula: "?d?+?",
         total: rollResults.reduce((acc, r) => acc + r.value, 0),
       };
       storeRollResult(valueResult);

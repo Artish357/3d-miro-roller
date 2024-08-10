@@ -1,7 +1,7 @@
 import { useState } from "react";
 import * as React from "react";
-import { RollerContext } from "./rollerContext";
-import { HistoricalRollResult } from "../types/diceRoller";
+import { RollerContext } from "../types/rollerContext";
+import { HistoricalRollResult } from "../types/historicalRollResult";
 
 export const LocalContextProvider = ({
   children,

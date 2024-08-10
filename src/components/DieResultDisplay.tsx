@@ -1,4 +1,4 @@
-import { DieResult } from "../types/diceRoller";
+import { DieResult } from "../types/historicalRollResult";
 
 export type DieResultDisplayProps = {
   dieResult: DieResult;
