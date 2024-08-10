@@ -113,7 +113,7 @@ export const App: FC = () => {
           left: 3,
           right: 3,
           top: "50%",
-          bottom: 3,
+          bottom: 50,
         }}
       ></div>
     </div>

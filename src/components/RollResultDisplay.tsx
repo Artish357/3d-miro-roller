@@ -9,6 +9,13 @@ export const RollResultDisplay = ({
   rollResult: { userName, modifier, rolls, total, timestamp, originalFormula },
 }: RollResultDisplayProps) => {
   const date = new Date(timestamp);
+  let dateString = date.toLocaleDateString();
+  const todayDateString = new Date().toLocaleDateString();
+  if (dateString === todayDateString) {
+    dateString = "";
+  }
+  const timeString = date.toLocaleTimeString();
+
   return (
     <div
       className="fw roll-history-entry"
@@ -20,7 +27,7 @@ export const RollResultDisplay = ({
       >
         <span>{userName}</span>
         <span style={{ fontSize: "0.75rem" }}>
-          {date.toLocaleDateString()} {date.toLocaleTimeString()}
+          {dateString} {timeString}
         </span>
       </div>
       <div
