@@ -18,7 +18,9 @@ async function initDiceBox() {
     gravity_multiplier: 200,
     sounds: true,
     volume: 100,
-    baseScale: 80,
+    baseScale: 65,
+    strength: 2,
+    theme_customColorset: { background: ["#00ffcb"] },
     theme_colorset: "black",
   });
   await diceBox.initialize();
@@ -71,6 +73,7 @@ export const App: FC = () => {
     } as const;
     const rollStrings = [];
     const resultStrings = [];
+    const supportedDice = [2, 3, 4, 6, 8, 10, 12, 20, 100];
     for (const fullRoll of diceRoll.rolls) {
       if (typeof fullRoll === "number" || typeof fullRoll === "string") {
         continue;
@@ -82,14 +85,19 @@ export const App: FC = () => {
         const roll = fullRoll.rolls[i];
         const rollString = `1d${roll.dice.sides}`;
         const resultString = `${roll.value}`;
+        if (!supportedDice.includes(roll.dice.sides)) {
+          continue;
+        }
         rollStrings.push(rollString);
         resultStrings.push(resultString);
       }
-      storeRollResult(rollMeta);
     }
-    await usingDiceBox.roll(
-      `${rollStrings.join("+")}@${resultStrings.join(",")}`
-    );
+    if (rollStrings.length !== 0) {
+      storeRollResult(rollMeta);
+      await usingDiceBox.roll(
+        `${rollStrings.join("+")}@${resultStrings.join(",")}`
+      );
+    }
     storeRollResult({
       ...rollMeta,
       type: "completed",
@@ -116,9 +124,8 @@ export const App: FC = () => {
       >
         Clear history
       </button>
-      {rollHistory.map(({ id }, i) => {
-        const r = rollHistory[rollHistory.length - 1 - i];
-        return <RollResultDisplay key={id} rollResult={r} />;
+      {[...rollHistory].reverse().map((r) => {
+        return <RollResultDisplay key={r.id} rollResult={r} />;
       })}
       <div
         id="dice-container"

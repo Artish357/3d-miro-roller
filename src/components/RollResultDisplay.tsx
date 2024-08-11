@@ -1,9 +1,5 @@
-import { Fragment, useState } from "react";
-import {
-  CompletedRoll,
-  HistoricalRollResult,
-} from "../types/historicalRollResult";
-import { DieResultDisplay } from "./DieResultDisplay";
+import { useState } from "react";
+import { HistoricalRollResult } from "../types/historicalRollResult";
 
 export type RollResultDisplayProps = {
   rollResult: HistoricalRollResult;
