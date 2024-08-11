@@ -122,8 +122,6 @@ export const App: FC = () => {
           right: 3,
           top: "50%",
           bottom: 50,
-          maxWidth: 800,
-          margin: "0 auto",
         }}
       ></div>
     </div>
