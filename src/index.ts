@@ -49,7 +49,7 @@ export async function init() {
     event: "roll-formula-tag",
     ui: {
       label: { en: "Roll the attached tag formula" },
-      icon: "hexagon",
+      icon: "cube",
     },
     scope: "local",
     predicate: {
