@@ -3,8 +3,9 @@ import DiceBox from "@3d-dice/dice-box";
 import "../src/assets/style.css";
 import { useEffect, useState, FC, useContext } from "react";
 import { RollerContext } from "./types/rollerContext";
-import { HistoricalRollResult } from "./types/historicalRollResult";
 import { RollResultDisplay } from "./components/RollResultDisplay";
+import { generateRandomId } from "./util/helpers";
+import { CompletedRoll, RollInProgress } from "./types/historicalRollResult";
 
 function initDiceBox(): Promise<DiceBox> {
   return new DiceBox({
@@ -21,15 +22,29 @@ function initDiceBox(): Promise<DiceBox> {
 
 export const App: FC = () => {
   const [diceBox, setDiceBox] = useState<DiceBox | null>(null);
-  const [lastFormula, setLastFormula] = useState<string>("");
   const { rollHistory, storeRollResult, userInfo, panelData } =
     useContext(RollerContext);
+  const [lastRollMeta, setLastRollMeta] = useState<RollInProgress>({
+    originalFormula: "",
+    id: "",
+    timestamp: "",
+    type: "inProgress",
+    userName: userInfo.name,
+  });
 
   useEffect(() => {
     const diceBoxPromise = initDiceBox();
     panelData.then(async (data) => {
       for (const formula of data?.formulas ?? []) {
-        setLastFormula(formula);
+        const newRoll = {
+          id: generateRandomId(),
+          originalFormula: formula,
+          timestamp: new Date().toISOString(),
+          type: "inProgress",
+          userName: userInfo.name,
+        } as const;
+        setLastRollMeta(newRoll);
+        storeRollResult(newRoll);
         await (await diceBoxPromise).roll(formula);
       }
     });
@@ -41,7 +56,9 @@ export const App: FC = () => {
   if (diceBox) {
     diceBox.onRollComplete = (rollResults) => {
       console.log("Roll Results", rollResults);
-      const valueResult: HistoricalRollResult = {
+      const valueResult: CompletedRoll = {
+        ...lastRollMeta,
+        type: "completed",
         modifier: rollResults.reduce((acc, r) => acc + r.modifier, 0),
         rolls: rollResults.map(({ rolls }) =>
           rolls.map((roll) => ({
@@ -49,9 +66,6 @@ export const App: FC = () => {
             sides: roll.sides,
           }))
         ),
-        timestamp: new Date().toISOString(),
-        userName: userInfo.name,
-        originalFormula: lastFormula,
         total: rollResults.reduce((acc, r) => acc + r.value, 0),
       };
       storeRollResult(valueResult);
@@ -87,7 +101,15 @@ export const App: FC = () => {
       signedModifier = `-${combinedModifiers}`;
     }
     diceRolls[diceRolls.length - 1] += signedModifier;
-    setLastFormula(diceRolls.join("+"));
+    const newRoll = {
+      id: generateRandomId(),
+      originalFormula: diceRolls.join("+"),
+      timestamp: new Date().toISOString(),
+      type: "inProgress",
+      userName: userInfo.name,
+    } as const;
+    setLastRollMeta(newRoll);
+    storeRollResult(newRoll);
     diceBox?.roll(diceRolls);
   }
   return (

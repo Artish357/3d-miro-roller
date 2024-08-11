@@ -14,7 +14,11 @@ export const LocalContextProvider = ({
   const storeRollResult: RollerContext["storeRollResult"] = (
     result: HistoricalRollResult
   ) => {
-    setRollHistory((prev) => [...prev, result].slice(-100));
+    setRollHistory((prev) =>
+      [...prev.filter((rhEntry) => rhEntry.id !== result.id), result].slice(
+        -100
+      )
+    );
   };
 
   const context: RollerContext = {

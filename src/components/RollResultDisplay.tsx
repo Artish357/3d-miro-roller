@@ -1,5 +1,8 @@
 import { Fragment, useState } from "react";
-import { HistoricalRollResult } from "../types/historicalRollResult";
+import {
+  CompletedRoll,
+  HistoricalRollResult,
+} from "../types/historicalRollResult";
 import { DieResultDisplay } from "./DieResultDisplay";
 
 export type RollResultDisplayProps = {
@@ -9,7 +12,7 @@ export type RollResultDisplayProps = {
 export const RollResultDisplay = ({ rollResult }: RollResultDisplayProps) => {
   const [expanded, setExpanded] = useState(false);
 
-  const { userName, total, timestamp, originalFormula } = rollResult;
+  const { userName, type, timestamp, originalFormula } = rollResult;
 
   const date = new Date(timestamp);
   let dateString = date.toLocaleDateString();
@@ -38,20 +41,27 @@ export const RollResultDisplay = ({ rollResult }: RollResultDisplayProps) => {
         style={{ gap: "5px", textAlign: "center" }}
       >
         <div className="well">{originalFormula}</div>
-        <div
-          className="well"
-          style={{ cursor: "pointer" }}
-          onClick={() => setExpanded(!expanded)}
-        >
-          {!expanded && <b>{total}</b>}
-          {expanded && ExpandedResult(rollResult)}
-        </div>
+        {type === "inProgress" && (
+          <div className="well">
+            <i>Rolling...</i>
+          </div>
+        )}
+        {type === "completed" && (
+          <div
+            className="well"
+            style={{ cursor: "pointer" }}
+            onClick={() => setExpanded(!expanded)}
+          >
+            {!expanded && <b>{rollResult.total}</b>}
+            {expanded && ExpandedResult(rollResult)}
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
-const ExpandedResult = ({ rolls, total, modifier }: HistoricalRollResult) => {
+const ExpandedResult = ({ rolls, total, modifier }: CompletedRoll) => {
   return (
     <>
       {rolls.map((roll, i) => (

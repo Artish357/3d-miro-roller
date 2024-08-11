@@ -1,9 +1,22 @@
 export type DieResult = { value: number; sides: number };
-export type HistoricalRollResult = {
+
+type HistoricalRollResultBase = {
+  id: string;
   userName: string;
   timestamp: string;
   originalFormula: string;
-  rolls: DieResult[][];
-  modifier: number;
-  total: number;
+  type: string;
 };
+
+export interface CompletedRoll extends HistoricalRollResultBase {
+  type: "completed";
+  rolls: DieResult[][];
+  total: number;
+  modifier: number;
+}
+
+export interface RollInProgress extends HistoricalRollResultBase {
+  type: "inProgress";
+}
+
+export type HistoricalRollResult = CompletedRoll | RollInProgress;
