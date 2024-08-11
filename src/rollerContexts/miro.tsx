@@ -1,22 +1,19 @@
-import { Collection } from "@mirohq/websdk-types";
+import { Collection, UserInfo } from "@mirohq/websdk-types";
 import { ReactNode, useEffect, useState } from "react";
 import { RollerContext } from "../types/rollerContext";
-import { HistoricalRollResult } from "../types/historicalRollResult";
-
-const rollHistoryStorage: Collection =
-  miro.board.storage.collection("rollHistory");
-const initialRollHistory = JSON.parse(
-  (await rollHistoryStorage.get<string>("rollHistory")) || "[]"
-) as HistoricalRollResult[];
-const userInfo = await miro.board.getUserInfo();
+import { RollHistory } from "../types/historicalRollResult";
 
 export const MiroContextProvider = ({ children }: { children: ReactNode }) => {
-  const [localRollHistory, setLocalRollHistory] = useState<
-    HistoricalRollResult[]
-  >([]);
-  const [remoteRollHistory, setRemoteRollHistory] =
-    useState<HistoricalRollResult[]>(initialRollHistory);
-  const mergedRollHistory = [...remoteRollHistory];
+  const rollHistoryStorage: Collection =
+    miro.board.storage.collection("rollHistory");
+
+  const [localRollHistory, setLocalRollHistory] = useState<RollHistory>([]);
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+
+  let [remoteRollHistory, setRemoteRollHistory] = useState<RollHistory | null>(
+    null
+  );
+  const mergedRollHistory = [...(remoteRollHistory ?? [])];
   for (const roll of localRollHistory) {
     if (!mergedRollHistory.find((rh) => rh.id === roll.id)) {
       mergedRollHistory.push(roll);
@@ -33,20 +30,18 @@ export const MiroContextProvider = ({ children }: { children: ReactNode }) => {
         `${result.userName} rolls ${result.total}!`
       );
     }
-    const newLocalHistory = [
-      ...localRollHistory.filter((rh) => rh.id !== result.id),
+    const newHistory = [
+      ...mergedRollHistory.filter((rh) => rh.id !== result.id),
       result,
     ].slice(-100);
-    setLocalRollHistory(newLocalHistory);
-
-    const newRemoteHistory = [
-      ...remoteRollHistory.filter((rh) => rh.id !== result.id),
-      result,
-    ].slice(-100);
-    rollHistoryStorage.set("rollHistory", JSON.stringify(newRemoteHistory));
+    setLocalRollHistory(newHistory);
+    rollHistoryStorage.set("rollHistory", JSON.stringify(newHistory));
   };
 
   useEffect(() => {
+    miro.board.getUserInfo().then((info) => {
+      setUserInfo(info);
+    });
     rollHistoryStorage.onValue<string>(
       "rollHistory",
       (newRollHistoryString) => {
@@ -63,6 +58,10 @@ export const MiroContextProvider = ({ children }: { children: ReactNode }) => {
     rollHistoryStorage.set("rollHistory", "[]");
     setLocalRollHistory([]);
   };
+
+  if (userInfo === null || remoteRollHistory === null) {
+    return <div>Loading...</div>;
+  }
 
   const context: RollerContext = {
     rollHistory: mergedRollHistory,

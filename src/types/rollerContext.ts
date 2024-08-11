@@ -1,8 +1,8 @@
 import { createContext } from "react";
-import { HistoricalRollResult } from "./historicalRollResult";
+import { HistoricalRollResult, RollHistory } from "./historicalRollResult";
 
 export type RollerContext = {
-  rollHistory: HistoricalRollResult[];
+  rollHistory: RollHistory;
   userInfo: { id: string; name: string };
   panelData: Promise<{ formulas: string[] } | undefined>;
   storeRollResult: (result: HistoricalRollResult) => void;

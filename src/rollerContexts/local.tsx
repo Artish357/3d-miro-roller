@@ -1,14 +1,17 @@
 import { useState } from "react";
 import * as React from "react";
 import { RollerContext } from "../types/rollerContext";
-import { HistoricalRollResult } from "../types/historicalRollResult";
+import {
+  HistoricalRollResult,
+  RollHistory,
+} from "../types/historicalRollResult";
 
 export const LocalContextProvider = ({
   children,
 }: {
   children: React.ReactNode;
 }) => {
-  const [rollHistory, setRollHistory] = useState<HistoricalRollResult[]>([]);
+  const [rollHistory, setRollHistory] = useState<RollHistory>([]);
   const userInfo = { id: "User", name: "User" };
 
   const storeRollResult: RollerContext["storeRollResult"] = (

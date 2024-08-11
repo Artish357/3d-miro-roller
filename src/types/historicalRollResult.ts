@@ -20,3 +20,4 @@ export interface RollInProgress extends HistoricalRollResultBase {
 }
 
 export type HistoricalRollResult = CompletedRoll | RollInProgress;
+export type RollHistory = HistoricalRollResult[];
