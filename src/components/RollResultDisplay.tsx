@@ -61,11 +61,11 @@ export const RollResultDisplay = ({ rollResult }: RollResultDisplayProps) => {
   );
 };
 
-const ExpandedResult = ({ rolls, total, modifier }: CompletedRoll) => {
+const ExpandedResult = ({ rolls, total, modifier, id }: CompletedRoll) => {
   return (
     <>
       {rolls.map((roll, i) => (
-        <Fragment key={i}>
+        <Fragment key={id}>
           {roll.map((dieResult, j) => (
             <Fragment key={j}>
               <DieResultDisplay dieResult={dieResult} />

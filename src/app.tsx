@@ -141,9 +141,9 @@ export const App: FC = () => {
       >
         Clear history
       </button>
-      {rollHistory.map((_, i) => {
+      {rollHistory.map(({ id }, i) => {
         const r = rollHistory[rollHistory.length - 1 - i];
-        return <RollResultDisplay key={i} rollResult={r} />;
+        return <RollResultDisplay key={id} rollResult={r} />;
       })}
       <div
         id="dice-container"
