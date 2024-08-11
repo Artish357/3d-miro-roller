@@ -8,7 +8,8 @@ export type RollResultDisplayProps = {
 export const RollResultDisplay = ({ rollResult }: RollResultDisplayProps) => {
   const [expanded, setExpanded] = useState(false);
 
-  const { userName, type, timestamp, originalFormula } = rollResult;
+  const { userName, type, timestamp, originalFormula, description } =
+    rollResult;
 
   const date = new Date(timestamp);
   let dateString = date.toLocaleDateString();
@@ -36,6 +37,7 @@ export const RollResultDisplay = ({ rollResult }: RollResultDisplayProps) => {
         className="flex fw flex-vertical"
         style={{ gap: "5px", textAlign: "center" }}
       >
+        <span dangerouslySetInnerHTML={{ __html: description ?? "" }}></span>
         <div className="well">{originalFormula}</div>
         {type === "inProgress" && (
           <div className="well">

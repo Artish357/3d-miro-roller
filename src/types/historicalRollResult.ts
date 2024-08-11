@@ -5,6 +5,7 @@ type HistoricalRollResultBase = {
   userName: string;
   timestamp: string;
   originalFormula: string;
+  description?: string;
   type: string;
 };
 

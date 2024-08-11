@@ -43,8 +43,9 @@ export const App: FC = () => {
     const diceBoxPromise = initDiceBox();
     diceBoxPromise.then((newDiceBox) => {
       panelData.then(async (data) => {
-        for (const formula of data?.formulas ?? []) {
-          await rollFormula(formula, newDiceBox);
+        const { formulas, description } = data ?? {};
+        for (const formula of formulas ?? []) {
+          await rollFormula(formula, newDiceBox, description);
         }
       });
       setDiceBox(newDiceBox);
@@ -69,7 +70,11 @@ export const App: FC = () => {
   }
 
   const DiceRollImport = import("./lib/rpg-dice-roller");
-  const rollFormula = async (formula: string, usingDiceBox: DiceBox) => {
+  const rollFormula = async (
+    formula: string,
+    usingDiceBox: DiceBox,
+    description?: string
+  ) => {
     const { DiceRoll } = await DiceRollImport;
     const diceRoll = new DiceRoll(formula);
     const rollMeta = {
@@ -78,6 +83,7 @@ export const App: FC = () => {
       timestamp: new Date().toISOString(),
       type: "inProgress",
       userName: userInfo.name,
+      description,
     } as const;
     const rollStrings = [];
     const resultStrings = [];

@@ -4,7 +4,7 @@ import { HistoricalRollResult, RollHistory } from "./historicalRollResult";
 export type RollerContext = {
   rollHistory: RollHistory;
   userInfo: { id: string; name: string };
-  panelData: Promise<{ formulas: string[] } | undefined>;
+  panelData: Promise<{ formulas: string[]; description?: string } | undefined>;
   storeRollResult: (result: HistoricalRollResult) => void;
   clearRollHistory: () => void;
 };

@@ -41,7 +41,7 @@ export async function init() {
       console.log("formulas", formulas, content);
       miro.board.ui.openPanel({
         url: `miro.html?r=${Math.random()}`,
-        data: { formulas },
+        data: { formulas, description: content },
       });
     }
   );
