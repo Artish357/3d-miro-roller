@@ -49,6 +49,10 @@ export const App: FC = () => {
       });
       setDiceBox(newDiceBox);
     });
+
+    miro.board.events.on("simulateRoll", async (formula) => {
+      (await diceBoxPromise).roll(formula);
+    });
   }, []);
 
   async function onInputSubmit(e: React.FormEvent<HTMLInputElement>) {
@@ -98,9 +102,9 @@ export const App: FC = () => {
     }
     if (rollStrings.length !== 0) {
       storeRollResult(rollMeta);
-      await usingDiceBox.roll(
-        `${rollStrings.join("+")}@${resultStrings.join(",")}`
-      );
+      const loadedFormula = `${rollStrings.join("+")}@${resultStrings.join(",")}`;
+      miro.board.events.broadcast("simulateRoll", loadedFormula);
+      await usingDiceBox.roll(loadedFormula);
     }
     storeRollResult({
       ...rollMeta,
@@ -109,6 +113,7 @@ export const App: FC = () => {
       result: diceRoll.output.split(": ")[1],
     });
   };
+
   return (
     <div
       className="fw flex flex-vertical dice-input-container"
