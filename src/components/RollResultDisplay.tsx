@@ -43,7 +43,7 @@ export const RollResultDisplay = ({ rollResult }: RollResultDisplayProps) => {
           style={{ cursor: "pointer" }}
           onClick={() => setExpanded(!expanded)}
         >
-          {!expanded && total}
+          {!expanded && <b>{total}</b>}
           {expanded && ExpandedResult(rollResult)}
         </div>
       </div>
