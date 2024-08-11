@@ -3,6 +3,7 @@ import { useEffect, useState, FC, useContext } from "react";
 import { RollerContext } from "./types/rollerContext";
 import { RollResultDisplay } from "./components/RollResultDisplay";
 import { generateRandomId } from "./util/helpers";
+import DiceBox from "@3d-dice/dice-box-threejs";
 
 const DiceBoxImport = import("@3d-dice/dice-box-threejs");
 async function initDiceBox() {
@@ -38,12 +39,12 @@ export const App: FC = () => {
 
   useEffect(() => {
     const diceBoxPromise = initDiceBox();
-    panelData.then(async (data) => {
-      for (const formula of data?.formulas ?? []) {
-        await rollFormula(formula);
-      }
-    });
     diceBoxPromise.then((newDiceBox) => {
+      panelData.then(async (data) => {
+        for (const formula of data?.formulas ?? []) {
+          await rollFormula(formula, newDiceBox);
+        }
+      });
       setDiceBox(newDiceBox);
     });
   }, []);
@@ -51,11 +52,14 @@ export const App: FC = () => {
   async function onInputSubmit(e: React.FormEvent<HTMLInputElement>) {
     e.preventDefault();
     const value = e.currentTarget.value;
-    rollFormula(value);
+    if (!diceBox) {
+      return;
+    }
+    rollFormula(value, diceBox);
   }
 
   const DiceRollImport = import("./lib/rpg-dice-roller");
-  const rollFormula = async (formula: string) => {
+  const rollFormula = async (formula: string, usingDiceBox: DiceBox) => {
     const { DiceRoll } = await DiceRollImport;
     const diceRoll = new DiceRoll(formula);
     const rollMeta = {
@@ -83,7 +87,9 @@ export const App: FC = () => {
       }
       storeRollResult(rollMeta);
     }
-    await diceBox?.roll(`${rollStrings.join("+")}@${resultStrings.join(",")}`);
+    await usingDiceBox.roll(
+      `${rollStrings.join("+")}@${resultStrings.join(",")}`
+    );
     storeRollResult({
       ...rollMeta,
       type: "completed",
