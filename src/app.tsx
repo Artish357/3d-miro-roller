@@ -18,6 +18,7 @@ async function initDiceBox(): Promise<DiceBox> {
     gravity_multiplier: 200,
     sounds: true,
     volume: 100,
+    baseScale: 80,
     theme_colorset: "black",
   });
   await diceBox.initialize();
