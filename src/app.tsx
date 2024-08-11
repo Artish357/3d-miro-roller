@@ -22,8 +22,13 @@ function initDiceBox(): Promise<DiceBox> {
 
 export const App: FC = () => {
   const [diceBox, setDiceBox] = useState<DiceBox | null>(null);
-  const { rollHistory, storeRollResult, userInfo, panelData } =
-    useContext(RollerContext);
+  const {
+    rollHistory,
+    userInfo,
+    panelData,
+    storeRollResult,
+    clearRollHistory,
+  } = useContext(RollerContext);
   const [lastRollMeta, setLastRollMeta] = useState<RollInProgress>({
     originalFormula: "",
     id: "",
@@ -114,8 +119,8 @@ export const App: FC = () => {
   }
   return (
     <div
-      className="fw fh flex flex-vertical dice-input-container"
-      style={{ gap: "15px" }}
+      className="fw flex flex-vertical dice-input-container"
+      style={{ gap: "5px" }}
     >
       <input
         type="text"
@@ -124,6 +129,13 @@ export const App: FC = () => {
         onSubmit={onInputSubmit}
         onKeyDown={(e) => e.key == "Enter" && onInputSubmit(e)}
       />
+      <button
+        className="fw"
+        style={{ maxWidth: 400, margin: "5px auto" }}
+        onClick={() => clearRollHistory()}
+      >
+        Clear history
+      </button>
       {rollHistory.map((_, i) => {
         const r = rollHistory[rollHistory.length - 1 - i];
         return <RollResultDisplay key={i} rollResult={r} />;

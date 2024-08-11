@@ -68,17 +68,9 @@ export const MiroContextProvider = ({ children }: { children: ReactNode }) => {
     userInfo,
     panelData: miro.board.ui.getPanelData(),
     storeRollResult,
+    clearRollHistory: clearHistory,
   };
   return (
-    <RollerContext.Provider value={context}>
-      <button
-        className="fw"
-        style={{ margin: "5px 0" }}
-        onClick={() => clearHistory()}
-      >
-        Clear history
-      </button>
-      {children}
-    </RollerContext.Provider>
+    <RollerContext.Provider value={context}>{children}</RollerContext.Provider>
   );
 };

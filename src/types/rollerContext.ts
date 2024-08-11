@@ -6,6 +6,7 @@ export type RollerContext = {
   userInfo: { id: string; name: string };
   panelData: Promise<{ formulas: string[] } | undefined>;
   storeRollResult: (result: HistoricalRollResult) => void;
+  clearRollHistory: () => void;
 };
 
 export const RollerContext = createContext<RollerContext>({
@@ -13,4 +14,5 @@ export const RollerContext = createContext<RollerContext>({
   userInfo: { id: "", name: "" },
   panelData: new Promise((resolve) => resolve(undefined)),
   storeRollResult: () => {},
+  clearRollHistory: () => {},
 });

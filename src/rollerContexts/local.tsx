@@ -29,6 +29,7 @@ export const LocalContextProvider = ({
     userInfo,
     panelData: new Promise((resolve) => resolve(undefined)),
     storeRollResult,
+    clearRollHistory: () => setRollHistory([]),
   };
   return (
     <RollerContext.Provider value={context}>{children}</RollerContext.Provider>
