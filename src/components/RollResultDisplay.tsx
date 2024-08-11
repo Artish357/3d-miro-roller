@@ -1,3 +1,4 @@
+import { Fragment, useState } from "react";
 import { HistoricalRollResult } from "../types/historicalRollResult";
 import { DieResultDisplay } from "./DieResultDisplay";
 
@@ -5,9 +6,11 @@ export type RollResultDisplayProps = {
   rollResult: HistoricalRollResult;
 };
 
-export const RollResultDisplay = ({
-  rollResult: { userName, modifier, rolls, total, timestamp, originalFormula },
-}: RollResultDisplayProps) => {
+export const RollResultDisplay = ({ rollResult }: RollResultDisplayProps) => {
+  const [expanded, setExpanded] = useState(false);
+
+  const { userName, total, timestamp, originalFormula } = rollResult;
+
   const date = new Date(timestamp);
   let dateString = date.toLocaleDateString();
   const todayDateString = new Date().toLocaleDateString();
@@ -35,9 +38,23 @@ export const RollResultDisplay = ({
         style={{ gap: "5px", textAlign: "center" }}
       >
         <div className="well">{originalFormula}</div>
-        <div className="well">{total}</div>
+        <div
+          className="well"
+          style={{ cursor: "pointer" }}
+          onClick={() => setExpanded(!expanded)}
+        >
+          {!expanded && total}
+          {expanded && ExpandedResult(rollResult)}
+        </div>
       </div>
-      {/* {rolls.map((roll, i) => (
+    </div>
+  );
+};
+
+const ExpandedResult = ({ rolls, total, modifier }: HistoricalRollResult) => {
+  return (
+    <>
+      {rolls.map((roll, i) => (
         <Fragment key={i}>
           {roll.map((dieResult, j) => (
             <Fragment key={j}>
@@ -50,7 +67,7 @@ export const RollResultDisplay = ({
       ))}
       {modifier ? (modifier > 0 ? " + " : " - ") + Math.abs(modifier) : ""}
       {" = "}
-      {total} */}
-    </div>
+      {total}
+    </>
   );
 };
