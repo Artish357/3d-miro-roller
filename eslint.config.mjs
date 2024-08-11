@@ -26,5 +26,8 @@ export default [
         },
       ],
     },
+    "prefer-const": {
+      destructuring: "all",
+    },
   },
 ];
