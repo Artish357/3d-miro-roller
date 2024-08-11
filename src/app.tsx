@@ -73,7 +73,7 @@ export const App: FC = () => {
     } as const;
     const rollStrings = [];
     const resultStrings = [];
-    const supportedDice = [2, 3, 4, 6, 8, 10, 12, 20, 100];
+    const supportedDice = ["F.1", "F.2", "F", 2, 3, 4, 6, 8, 10, 12, 20, 100];
     for (const fullRoll of diceRoll.rolls) {
       if (typeof fullRoll === "number" || typeof fullRoll === "string") {
         continue;
@@ -83,11 +83,15 @@ export const App: FC = () => {
       }
       for (let i = 0; i < fullRoll.rolls.length; i++) {
         const roll = fullRoll.rolls[i];
-        const rollString = `1d${roll.dice.sides}`;
-        const resultString = `${roll.value}`;
-        if (!supportedDice.includes(roll.dice.sides)) {
+        let sides = roll.dice.sides;
+        if (!supportedDice.includes(sides)) {
           continue;
         }
+        if (sides === "F.1" || sides === "F.2" || sides === "F") {
+          sides = "f"; // 3d-dice-box uses "f" for fudge dice
+        }
+        const rollString = `1d${sides}`;
+        const resultString = `${roll.value}`;
         rollStrings.push(rollString);
         resultStrings.push(resultString);
       }
