@@ -53,31 +53,10 @@ export const RollResultDisplay = ({ rollResult }: RollResultDisplayProps) => {
             onClick={() => setExpanded(!expanded)}
           >
             {!expanded && <b>{rollResult.total}</b>}
-            {expanded && ExpandedResult(rollResult)}
+            {expanded && rollResult.result}
           </div>
         )}
       </div>
     </div>
-  );
-};
-
-const ExpandedResult = ({ rolls, total, modifier, id }: CompletedRoll) => {
-  return (
-    <>
-      {rolls.map((roll, i) => (
-        <Fragment key={id}>
-          {roll.map((dieResult, j) => (
-            <Fragment key={j}>
-              <DieResultDisplay dieResult={dieResult} />
-              {j != roll.length - 1 && ","}
-            </Fragment>
-          ))}
-          {i != rolls.length - 1 && " + "}
-        </Fragment>
-      ))}
-      {modifier ? (modifier > 0 ? " + " : " - ") + Math.abs(modifier) : ""}
-      {" = "}
-      {total}
-    </>
   );
 };

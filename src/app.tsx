@@ -1,14 +1,12 @@
-import DiceBox from "@3d-dice/dice-box-threejs";
-
 import "../src/assets/style.css";
 import { useEffect, useState, FC, useContext } from "react";
 import { RollerContext } from "./types/rollerContext";
 import { RollResultDisplay } from "./components/RollResultDisplay";
 import { generateRandomId } from "./util/helpers";
-import { CompletedRoll, RollInProgress } from "./types/historicalRollResult";
-import { DiceRoll } from "./lib/rpg-dice-roller";
 
-async function initDiceBox(): Promise<DiceBox> {
+const DiceBoxImport = import("@3d-dice/dice-box-threejs");
+async function initDiceBox() {
+  const DiceBox = (await DiceBoxImport).default;
   const diceBox = new DiceBox("#dice-container", {
     // Workaround for non-root deployments
     assetPath: document.location.pathname
@@ -27,7 +25,9 @@ async function initDiceBox(): Promise<DiceBox> {
 }
 
 export const App: FC = () => {
-  const [diceBox, setDiceBox] = useState<DiceBox | null>(null);
+  const [diceBox, setDiceBox] = useState<Awaited<
+    ReturnType<typeof initDiceBox>
+  > | null>(null);
   const {
     rollHistory,
     userInfo,
@@ -35,28 +35,12 @@ export const App: FC = () => {
     storeRollResult,
     clearRollHistory,
   } = useContext(RollerContext);
-  const [lastRollMeta, setLastRollMeta] = useState<RollInProgress>({
-    originalFormula: "",
-    id: "",
-    timestamp: "",
-    type: "inProgress",
-    userName: userInfo.name,
-  });
 
   useEffect(() => {
     const diceBoxPromise = initDiceBox();
     panelData.then(async (data) => {
       for (const formula of data?.formulas ?? []) {
-        const newRoll = {
-          id: generateRandomId(),
-          originalFormula: formula,
-          timestamp: new Date().toISOString(),
-          type: "inProgress",
-          userName: userInfo.name,
-        } as const;
-        setLastRollMeta(newRoll);
-        storeRollResult(newRoll);
-        await (await diceBoxPromise).roll(formula);
+        await rollFormula(formula);
       }
     });
     diceBoxPromise.then((newDiceBox) => {
@@ -64,29 +48,16 @@ export const App: FC = () => {
     });
   }, []);
 
-  if (diceBox) {
-    diceBox.onRollComplete = (rollResults) => {
-      console.log("Roll Results", rollResults);
-      const valueResult: CompletedRoll = {
-        ...lastRollMeta,
-        type: "completed",
-        modifier: rollResults.modifier,
-        rolls: rollResults.sets.map(({ rolls }) =>
-          rolls.map((roll) => ({
-            value: roll.value,
-            sides: roll.sides,
-          }))
-        ),
-        total: rollResults.total,
-      };
-      storeRollResult(valueResult);
-    };
-  }
-
   async function onInputSubmit(e: React.FormEvent<HTMLInputElement>) {
     e.preventDefault();
     const value = e.currentTarget.value;
-    const diceRoll = new DiceRoll(value);
+    rollFormula(value);
+  }
+
+  const DiceRollImport = import("./lib/rpg-dice-roller");
+  const rollFormula = async (formula: string) => {
+    const { DiceRoll } = await DiceRollImport;
+    const diceRoll = new DiceRoll(formula);
     const rollMeta = {
       id: generateRandomId(),
       originalFormula: diceRoll.notation,
@@ -94,7 +65,6 @@ export const App: FC = () => {
       type: "inProgress",
       userName: userInfo.name,
     } as const;
-    console.log(diceRoll.output);
     const rollStrings = [];
     const resultStrings = [];
     for (const fullRoll of diceRoll.rolls) {
@@ -118,10 +88,9 @@ export const App: FC = () => {
       ...rollMeta,
       type: "completed",
       total: diceRoll.total,
-      modifier: 0,
-      rolls: [],
+      result: diceRoll.output.split(": ")[1],
     });
-  }
+  };
   return (
     <div
       className="fw flex flex-vertical dice-input-container"

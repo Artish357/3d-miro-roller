@@ -10,9 +10,8 @@ type HistoricalRollResultBase = {
 
 export interface CompletedRoll extends HistoricalRollResultBase {
   type: "completed";
-  rolls: DieResult[][];
   total: number;
-  modifier: number;
+  result: string;
 }
 
 export interface RollInProgress extends HistoricalRollResultBase {
