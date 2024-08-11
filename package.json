@@ -12,6 +12,7 @@
   "dependencies": {
     "@3d-dice/dice-box-threejs": "^0.0.12",
     "@3d-dice/dice-parser-interface": "^0.2.1",
+    "@dice-roller/rpg-dice-roller": "github:erik-jenkins/rpg-dice-roller#include-dice-in-rollresult",
     "mirotone": "5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"

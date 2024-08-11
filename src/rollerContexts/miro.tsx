@@ -10,9 +10,8 @@ export const MiroContextProvider = ({ children }: { children: ReactNode }) => {
   const [localRollHistory, setLocalRollHistory] = useState<RollHistory>([]);
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
 
-  let [remoteRollHistory, setRemoteRollHistory] = useState<RollHistory | null>(
-    null
-  );
+  const [remoteRollHistory, setRemoteRollHistory] =
+    useState<RollHistory | null>(null);
   const mergedRollHistory = [...(remoteRollHistory ?? [])];
   for (const roll of localRollHistory) {
     if (!mergedRollHistory.find((rh) => rh.id === roll.id)) {

@@ -20,7 +20,7 @@ declare module "@3d-dice/dice-box-threejs" {
   };
   export default class DiceBox {
     constructor(selector: string, options: unknown);
-    roll(input: string): Promise<unknown>;
+    roll(input: unknown): Promise<unknown>;
     initialize(): Promise<unknown>;
     public onRollComplete: (result: RollResult) => void;
   }

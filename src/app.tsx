@@ -6,6 +6,7 @@ import { RollerContext } from "./types/rollerContext";
 import { RollResultDisplay } from "./components/RollResultDisplay";
 import { generateRandomId } from "./util/helpers";
 import { CompletedRoll, RollInProgress } from "./types/historicalRollResult";
+import { DiceRoll } from "./lib/rpg-dice-roller";
 
 async function initDiceBox(): Promise<DiceBox> {
   const diceBox = new DiceBox("#dice-container", {
@@ -82,45 +83,44 @@ export const App: FC = () => {
     };
   }
 
-  function onInputSubmit(e: React.FormEvent<HTMLInputElement>) {
+  async function onInputSubmit(e: React.FormEvent<HTMLInputElement>) {
     e.preventDefault();
-    const value = e.currentTarget.value.replaceAll(" ", "");
-    const rolls: string[] = [""];
-    for (const char of value) {
-      if (char === "+" || char === "-") {
-        rolls.push(char);
-      } else {
-        rolls[rolls.length - 1] = (rolls[rolls.length - 1] ?? "") + char;
-      }
-    }
-    const diceRolls = [];
-    let combinedModifiers = 0;
-    for (const roll of rolls) {
-      const isModifier = /^(\+|-)(\d+)$/;
-      if (isModifier.test(roll)) {
-        const [_, modifierSign, modifierValue] = roll.match(isModifier) ?? [];
-        combinedModifiers += parseInt(modifierSign + modifierValue);
-      } else {
-        diceRolls.push(roll.replaceAll("+", "").replaceAll("-", ""));
-      }
-    }
-    let signedModifier = "";
-    if (combinedModifiers > 0) {
-      signedModifier = `+${combinedModifiers}`;
-    } else if (combinedModifiers < 0) {
-      signedModifier = `-${combinedModifiers}`;
-    }
-    diceRolls[diceRolls.length - 1] += signedModifier;
-    const newRoll = {
+    const value = e.currentTarget.value;
+    const diceRoll = new DiceRoll(value);
+    const rollMeta = {
       id: generateRandomId(),
-      originalFormula: diceRolls.join("+"),
+      originalFormula: diceRoll.notation,
       timestamp: new Date().toISOString(),
       type: "inProgress",
       userName: userInfo.name,
     } as const;
-    setLastRollMeta(newRoll);
-    storeRollResult(newRoll);
-    diceBox?.roll(diceRolls.join("+"));
+    console.log(diceRoll.output);
+    const rollStrings = [];
+    const resultStrings = [];
+    for (const fullRoll of diceRoll.rolls) {
+      if (typeof fullRoll === "number" || typeof fullRoll === "string") {
+        continue;
+      }
+      if ("results" in fullRoll) {
+        throw new Error("Roll groups not supported");
+      }
+      for (let i = 0; i < fullRoll.rolls.length; i++) {
+        const roll = fullRoll.rolls[i];
+        const rollString = `1d${roll.dice.sides}`;
+        const resultString = `${roll.value}`;
+        rollStrings.push(rollString);
+        resultStrings.push(resultString);
+      }
+      storeRollResult(rollMeta);
+    }
+    await diceBox?.roll(`${rollStrings.join("+")}@${resultStrings.join(",")}`);
+    storeRollResult({
+      ...rollMeta,
+      type: "completed",
+      total: diceRoll.total,
+      modifier: 0,
+      rolls: [],
+    });
   }
   return (
     <div

@@ -6,6 +6,7 @@ import eslintConfigPrettier from "eslint-config-prettier";
 
 export default [
   { files: ["src/**/*.{js,mjs,cjs,ts,jsx,tsx}"] },
+  { ignores: ["src/lib"] },
   { languageOptions: { globals: globals.browser } },
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
@@ -25,9 +26,12 @@ export default [
           destructuredArrayIgnorePattern: "^_",
         },
       ],
-    },
-    "prefer-const": {
-      destructuring: "all",
+      "prefer-const": [
+        "error",
+        {
+          destructuring: "all",
+        },
+      ],
     },
   },
 ];
