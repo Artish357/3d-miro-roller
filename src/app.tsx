@@ -1,4 +1,4 @@
-import DiceBox from "@3d-dice/dice-box";
+import DiceBox from "@3d-dice/dice-box-threejs";
 
 import "../src/assets/style.css";
 import { useEffect, useState, FC, useContext } from "react";
@@ -7,17 +7,21 @@ import { RollResultDisplay } from "./components/RollResultDisplay";
 import { generateRandomId } from "./util/helpers";
 import { CompletedRoll, RollInProgress } from "./types/historicalRollResult";
 
-function initDiceBox(): Promise<DiceBox> {
-  return new DiceBox({
-    container: "#dice-container",
+async function initDiceBox(): Promise<DiceBox> {
+  const diceBox = new DiceBox("#dice-container", {
     // Workaround for non-root deployments
     assetPath: document.location.pathname
       .split("/")
       .slice(0, -1)
       .concat(["assets/"])
       .join("/"),
-    scale: 8,
-  }).init();
+    gravity_multiplier: 200,
+    sounds: true,
+    volume: 100,
+    theme_colorset: "black",
+  });
+  await diceBox.initialize();
+  return diceBox;
 }
 
 export const App: FC = () => {
@@ -64,14 +68,14 @@ export const App: FC = () => {
       const valueResult: CompletedRoll = {
         ...lastRollMeta,
         type: "completed",
-        modifier: rollResults.reduce((acc, r) => acc + r.modifier, 0),
-        rolls: rollResults.map(({ rolls }) =>
+        modifier: rollResults.modifier,
+        rolls: rollResults.sets.map(({ rolls }) =>
           rolls.map((roll) => ({
             value: roll.value,
             sides: roll.sides,
           }))
         ),
-        total: rollResults.reduce((acc, r) => acc + r.value, 0),
+        total: rollResults.total,
       };
       storeRollResult(valueResult);
     };
@@ -115,7 +119,7 @@ export const App: FC = () => {
     } as const;
     setLastRollMeta(newRoll);
     storeRollResult(newRoll);
-    diceBox?.roll(diceRolls);
+    diceBox?.roll(diceRolls.join("+"));
   }
   return (
     <div
@@ -148,6 +152,8 @@ export const App: FC = () => {
           right: 3,
           top: "50%",
           bottom: 50,
+          maxWidth: 800,
+          margin: "0 auto",
         }}
       ></div>
     </div>

@@ -10,7 +10,7 @@
     "lint": "eslint src"
   },
   "dependencies": {
-    "@3d-dice/dice-box": "^1.1.3",
+    "@3d-dice/dice-box-threejs": "^0.0.12",
     "@3d-dice/dice-parser-interface": "^0.2.1",
     "mirotone": "5",
     "react": "^18.2.0",
