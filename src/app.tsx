@@ -15,11 +15,11 @@ async function initDiceBox() {
       .slice(0, -1)
       .concat(["assets/"])
       .join("/"),
-    gravity_multiplier: 200,
+    gravity_multiplier: 400,
     sounds: true,
     volume: 100,
     baseScale: 65,
-    strength: 2,
+    strength: 4,
     theme_customColorset: { background: ["#00ffcb"] },
     theme_colorset: "black",
   });
@@ -50,9 +50,13 @@ export const App: FC = () => {
       setDiceBox(newDiceBox);
     });
 
-    miro.board.events.on("simulateRoll", async (formula) => {
-      (await diceBoxPromise).roll(formula);
-    });
+    try {
+      miro.board.events.on("simulateRoll", async (formula) => {
+        (await diceBoxPromise).roll(formula);
+      });
+    } catch (e) {
+      void e;
+    }
   }, []);
 
   async function onInputSubmit(e: React.FormEvent<HTMLInputElement>) {
@@ -103,7 +107,11 @@ export const App: FC = () => {
     if (rollStrings.length !== 0) {
       storeRollResult(rollMeta);
       const loadedFormula = `${rollStrings.join("+")}@${resultStrings.join(",")}`;
-      miro.board.events.broadcast("simulateRoll", loadedFormula);
+      try {
+        miro.board.events.broadcast("simulateRoll", loadedFormula);
+      } catch (e) {
+        void e;
+      }
       await usingDiceBox.roll(loadedFormula);
     }
     storeRollResult({
