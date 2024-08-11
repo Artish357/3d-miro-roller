@@ -19,12 +19,23 @@ export async function init() {
       const content = items[0].content
         .replaceAll("&#43;", "+")
         .replaceAll("&#45;", "-");
-      const modString = /[+-]\d+/.exec(content)?.[0] ?? "";
+      const [X, Y, Z] = [...content.matchAll(/([+-]?\d+)/g)]
+        .map((x) => x[0])
+        .map((x) => parseFloat(x))
+        .concat([0, 0, 0]);
       const formulas = tags
         .map((tag) =>
           tag.title
             // If MOD placeholder is present, replace it with the actual value
-            .replaceAll("{MOD}", modString)
+            .replaceAll("X", `${X}`)
+            .replaceAll("+X", `+${X}`)
+            .replaceAll("-X", `-${X}`)
+            .replaceAll("Y", `${Y}`)
+            .replaceAll("+Y", `+${Y}`)
+            .replaceAll("-Y", `-${Y}`)
+            .replaceAll("Z", `${Z}`)
+            .replaceAll("+Z", `+${Z}`)
+            .replaceAll("-Z", `-${Z}`)
         )
         .slice(0, 1); // Can't figure out sequential rolling yet
       console.log("formulas", formulas, content);
