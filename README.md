@@ -8,4 +8,4 @@ Dice rolling plugin for playing TTRPGs and boardgames on the Miro whiteboard
 - Synchronized roll history between players on the board
 - Get a notification anytime another player rolls dice
 - Simple interface, nothing extra. Just type your roll in the Roll20 format and press Enter
-- Complex notation support - WIP
+- Complex notation support
