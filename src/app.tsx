@@ -19,7 +19,7 @@ async function initDiceBox() {
     sounds: true,
     volume: 100,
     baseScale: 65,
-    strength: 4,
+    strength: 8,
     theme_customColorset: { background: ["#00ffcb"] },
     theme_colorset: "black",
   });
@@ -75,16 +75,17 @@ export const App: FC = () => {
     usingDiceBox: DiceBox,
     description?: string
   ) => {
-    const { DiceRoll } = await DiceRollImport;
-    const diceRoll = new DiceRoll(formula);
     const rollMeta = {
       id: generateRandomId(),
-      originalFormula: diceRoll.notation,
+      originalFormula: formula,
       timestamp: new Date().toISOString(),
       type: "inProgress",
       userName: userInfo.name,
       description,
     } as const;
+    storeRollResult(rollMeta);
+    const { DiceRoll } = await DiceRollImport;
+    const diceRoll = new DiceRoll(formula);
     const rollStrings = [];
     const resultStrings = [];
     const supportedDice = ["F.1", "F.2", "F", 2, 3, 4, 6, 8, 10, 12, 20, 100];
@@ -111,7 +112,6 @@ export const App: FC = () => {
       }
     }
     if (rollStrings.length !== 0) {
-      storeRollResult(rollMeta);
       const loadedFormula = `${rollStrings.join("+")}@${resultStrings.join(",")}`;
       try {
         miro.board.events.broadcast("simulateRoll", loadedFormula);
@@ -122,6 +122,7 @@ export const App: FC = () => {
     }
     storeRollResult({
       ...rollMeta,
+      originalFormula: diceRoll.notation,
       type: "completed",
       total: diceRoll.total,
       result: diceRoll.output.split(": ")[1],
