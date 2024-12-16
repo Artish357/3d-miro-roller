@@ -3,9 +3,11 @@ import { useEffect, useState, FC, useContext } from "react";
 import { RollerContext } from "./types/rollerContext";
 import { RollResultDisplay } from "./components/RollResultDisplay";
 import { generateRandomId } from "./util/helpers";
-import DiceBox from "@3d-dice/dice-box-threejs";
-
+import type DiceBox from "@3d-dice/dice-box-threejs";
+import { RollInProgress } from "./types/historicalRollResult";
+const DiceRollImport = import("./lib/rpg-dice-roller");
 const DiceBoxImport = import("@3d-dice/dice-box-threejs");
+
 async function initDiceBox() {
   const DiceBox = (await DiceBoxImport).default;
   const diceBox = new DiceBox("#dice-container", {
@@ -24,6 +26,13 @@ async function initDiceBox() {
     theme_colorset: "black",
   });
   await diceBox.initialize();
+  try {
+    miro.board.events.on("simulateRoll", async (formula) => {
+      diceBox.roll(formula);
+    });
+  } catch (e) {
+    void e;
+  }
   return diceBox;
 }
 
@@ -50,14 +59,6 @@ export const App: FC = () => {
       });
       setDiceBox(newDiceBox);
     });
-
-    try {
-      miro.board.events.on("simulateRoll", async (formula) => {
-        (await diceBoxPromise).roll(formula);
-      });
-    } catch (e) {
-      void e;
-    }
   }, []);
 
   async function onInputSubmit(e: React.FormEvent<HTMLInputElement>) {
@@ -69,13 +70,12 @@ export const App: FC = () => {
     rollFormula(value, diceBox);
   }
 
-  const DiceRollImport = import("./lib/rpg-dice-roller");
   const rollFormula = async (
     formula: string,
     usingDiceBox: DiceBox,
     description?: string
   ) => {
-    const rollMeta = {
+    const rollMeta: RollInProgress = {
       id: generateRandomId(),
       originalFormula: formula,
       timestamp: new Date().toISOString(),
