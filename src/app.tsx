@@ -52,9 +52,18 @@ export const App: FC = () => {
     const diceBoxPromise = initDiceBox();
     diceBoxPromise.then((newDiceBox) => {
       panelData.then(async (data) => {
-        const { formulas, description } = data ?? {};
-        for (const formula of formulas ?? []) {
-          await rollFormula(formula, newDiceBox, description);
+        const { rolls, description } = data ?? {};
+        for (const { formula, rollId } of rolls ?? []) {
+          const alreadyRolled = rollHistory.some((r) => r.id === rollId);
+          if (alreadyRolled) {
+            continue;
+          }
+          await rollFormula({
+            formula,
+            rollId,
+            usingDiceBox: newDiceBox,
+            description,
+          });
         }
       });
       setDiceBox(newDiceBox);
@@ -67,16 +76,27 @@ export const App: FC = () => {
     if (!diceBox) {
       return;
     }
-    rollFormula(value, diceBox);
+    rollFormula({
+      formula: value,
+      usingDiceBox: diceBox,
+      rollId: generateRandomId(),
+    });
   }
 
-  const rollFormula = async (
-    formula: string,
-    usingDiceBox: DiceBox,
-    description?: string
-  ) => {
+  type RollFormulaParams = {
+    formula: string;
+    rollId: string;
+    usingDiceBox: DiceBox;
+    description?: string;
+  };
+  const rollFormula = async ({
+    formula,
+    rollId,
+    usingDiceBox,
+    description,
+  }: RollFormulaParams) => {
     const rollMeta: RollInProgress = {
-      id: generateRandomId(),
+      id: rollId,
       originalFormula: formula,
       timestamp: new Date().toISOString(),
       type: "inProgress",

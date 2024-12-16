@@ -1,3 +1,6 @@
+import { PanelData } from "./types/rollerContext";
+import { generateRandomId } from "./util/helpers";
+
 export async function init() {
   miro.board.ui.on("icon:click", async () => {
     await miro.board.ui.openPanel({ url: "miro.html" });
@@ -23,9 +26,9 @@ export async function init() {
         .map((x) => x[0])
         .map((x) => parseFloat(x))
         .concat([0, 0, 0]);
-      const formulas = tags
-        .map((tag) =>
-          tag.title
+      const rolls = tags
+        .map((tag) => {
+          const formula = tag.title
             // If MOD placeholder is present, replace it with the actual value
             .replaceAll("X", `${X}`)
             .replaceAll("+X", `+${X}`)
@@ -35,13 +38,15 @@ export async function init() {
             .replaceAll("-Y", `-${Y}`)
             .replaceAll("Z", `${Z}`)
             .replaceAll("+Z", `+${Z}`)
-            .replaceAll("-Z", `-${Z}`)
-        )
+            .replaceAll("-Z", `-${Z}`);
+          const rollId = generateRandomId();
+          return { formula, rollId };
+        })
         .slice(0, 1); // Can't figure out sequential rolling yet
-      console.log("formulas", formulas, content);
-      miro.board.ui.openPanel({
-        url: `miro.html?r=${Math.random()}`,
-        data: { formulas, description: content },
+      const rollId = Math.random().toString(36).substring(7);
+      miro.board.ui.openPanel<PanelData>({
+        url: `miro.html?r=${rollId}`,
+        data: { rolls, description: content },
       });
     }
   );
